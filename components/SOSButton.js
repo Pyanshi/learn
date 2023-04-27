@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Animated, Text } from 'react-native';
-import { Dimensions } from 'react-native';
+import React, { useState } from "react";
+import { View, TouchableOpacity, Animated, Text } from "react-native";
+import { Dimensions } from "react-native";
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 
-const SOSButton = () => {
+const SOSButton = ({ apiData }) => {
   const [animation] = useState(new Animated.Value(1));
 
   const handlePress = () => {
+    // send apiData in api as payload
     Animated.sequence([
       Animated.timing(animation, {
         toValue: 2,
@@ -35,49 +36,44 @@ const SOSButton = () => {
 
   return (
     <TouchableOpacity onPress={handlePress}>
-      <View   
+      <View
         style={{
           width: 200,
           height: 200,
           borderRadius: 40,
 
-          position: 'relative',
-          backgroundColor: 'red',
-          justifyContent: 'center',
-          alignItems: 'center',
-          
-          marginTop: width/5,
-        }}>
-        <Animated.View
+          position: "relative",
+          backgroundColor: "red",
+          justifyContent: "center",
+          alignItems: "center",
 
+          marginTop: width / 5,
+        }}
+      >
+        <Animated.View
           style={{
-           
             // position: 'relative',
-            
+
             width: 200,
             height: 200,
             borderRadius: 40,
             borderWidth: 4,
-            
+
             // position: 'relative',
 
-            borderColor: 'white',
+            borderColor: "white",
             transform: [{ scale: waveScale }],
             opacity: waveOpacity,
           }}
         />
-
       </View>
       {/* <Text style={{ color: 'white', fontWeight: 'bold' ,padding:20 }}>Report A Disaster</Text> */}
       <Text>I'm another button</Text>
-
     </TouchableOpacity>
   );
 };
 
 export default SOSButton;
-
-
 
 // import React, { useState } from 'react';
 // import { View, TouchableOpacity, Animated } from 'react-native';
@@ -116,9 +112,9 @@ export default SOSButton;
 
 //   return (
 //     <TouchableOpacity onPress={handlePress}>
-     
+
 //       <View
-   
+
 //         style={{
 //           width: 100,
 //           height: 100,
@@ -128,19 +124,19 @@ export default SOSButton;
 //           backgroundColor: 'red',
 //           justifyContent: 'center',
 //           alignItems: 'center',
-          
+
 //           marginTop: width/5,
 //         }}>
 //         <Animated.View
 //           style={{
-           
+
 //             // position: 'relative',
-            
+
 //             width: 100,
 //             height: 100,
 //             borderRadius: 40,
 //             borderWidth: 4,
-            
+
 //             // position: 'relative',
 
 //             borderColor: 'white',
@@ -199,8 +195,6 @@ export default SOSButton;
 
 // export default SOSButton;
 
-
-
 // // import React, { useState } from 'react';
 // // import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 
@@ -239,7 +233,6 @@ export default SOSButton;
 // //   // });
 // //   return (
 // //     <View style={styles.screen}>
-     
 
 // //       <TouchableOpacity
 // //         onPress={buttonClickedHandler}
