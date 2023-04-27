@@ -5,8 +5,17 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 
 const { height, width } = Dimensions.get('window');
 
-
-const DropdownComponent = props => {
+const data = [
+  { label: 'Landslide', value: '1' },
+  { label: 'Flood', value: '2' },
+  { label: 'Earthquake', value: '3' },
+  { label: 'Fire', value: '4' },
+  { label: 'Cyclone', value: '5' },
+  { label: 'Other', value: '6' },
+  // { label: 'Item 7', value: '7' },
+  // { label: 'Item 8', value: '8' },
+];
+const DropdownComponentOne = () => {
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
 
@@ -30,14 +39,14 @@ const DropdownComponent = props => {
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={props.data}
+        data={data}
         search
         maxHeight={300}
         labelField="label"
         valueField="value"
         placeholder={!isFocus ? 'Select item' : '...'}
         searchPlaceholder="Search..."
-        value={props.value}
+        value={value}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
@@ -105,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DropdownComponent;
+export default DropdownComponentOne;
