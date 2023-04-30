@@ -1,136 +1,69 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
-import { Audio } from "expo-av";
-import axios from "axios";
+// import { StatusBar } from "expo-status-bar";
+// import React from "react";
+// import { Button, StyleSheet, Text, View } from "react-native";
+// import { Audio } from "expo-av";
+// import axios from "axios";
 
-export default function AudioTest({ audioFiles, setAudioFiles }) {
+// export default function AudioTest({ audioFiles, setAudioFiles }) {
+import * as React from "react";
+import { Text, View, StyleSheet, Button } from "react-native";
+import { Audio } from "expo-av";
+
+export default function AudioTest() {
   const [recording, setRecording] = React.useState();
-  const [recordings, setRecordings] = React.useState([]);
-  const [message, setMessage] = React.useState("");
 
   async function startRecording() {
     try {
-      const permission = await Audio.requestPermissionsAsync();
+      console.log("Requesting permissions..");
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
 
-      if (permission.status === "granted") {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
-        });
-
-        const { recording } = await Audio.Recording.createAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-        );
-        setAudioFiles(recording);
-        // setRecording(recording);
-      } else {
-        setMessage("Please grant permission to app to access microphone");
-      }
+      console.log("Starting recording..");
+      const { recording } = await Audio.Recording.createAsync(
+        Audio.RecordingOptionsPresets.HIGH_QUALITY
+      );
+      setRecording(recording);
+      console.log("Recording started");
     } catch (err) {
       console.error("Failed to start recording", err);
     }
   }
+
   async function stopRecording() {
+    console.log("Stopping recording..");
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
-    let updatedRecordings = [...recordings];
-    const { sound, status } = await recording.createNewLoadedSoundAsync();
-    updatedRecordings.push({
-      sound: sound,
-      duration: getDurationFormatted(status.durationMillis),
-      file: recording.getURI(),
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
     });
-
-    setRecordings(updatedRecordings);
-    // axios.post('http://localhost:5000/upload_audio', { audioUri: recording.getURI() })
-    // .then(response => {
-    //   console.log(response.data.message);
-
-    // })
-    // .catch(error => {
-    //   console.error(error);
-    // });
-
-    // async function response() {
-    //   await fetch('http://localhost:5000/upload_audio', {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json'
-    //       },
-    //       body: JSON.stringify({ audioUri: recording.getURI() })
-    //     });
-    //     const data = await response.json();
-
-    //     console.log(data.message);
-    //   }
-  }
-
-  // async function stopRecording() {
-  //   setRecording(undefined);
-  //   await recording.stopAndUnloadAsync();
-
-  //   let updatedRecordings = [...recordings];
-  //   const { sound, status } = await recording.createNewLoadedSoundAsync();
-  //   updatedRecordings.push({
-  //     sound: sound,
-  //     duration: getDurationFormatted(status.durationMillis),
-  //     file: recording.getURI()
-
-  //   });
-
-  //   setRecordings(updatedRecordings);
-
-  // const response =  fetch('http:localhost:5000/upload_audio', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json'
-  //   },
-  //   body: JSON.stringify({ audioUri: recording.getURI() })
-  // });
-  // const data =  response.json();
-
-  // console.log(data.message);
-  // }
-
-  function getDurationFormatted(millis) {
-    const minutes = millis / 1000 / 60;
-    const minutesDisplay = Math.floor(minutes);
-    const seconds = Math.round((minutes - minutesDisplay) * 60);
-    const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds;
-    return `${minutesDisplay}:${secondsDisplay}`;
-  }
-
-  function getRecordingLines() {
-    return recordings.map((recordingLine, index) => {
-      return (
-        <View key={index} style={styles.row}>
-          <Text style={styles.fill}>Recording {index + 1}</Text>
-          <Button
-            style={styles.button}
-            onPress={() => recordingLine.sound.replayAsync()}
-            title="Play"
-          ></Button>
-        </View>
-      );
-    });
+    console.log(recording);
+    let b = await fetch(recording?._uri).then((r) => r.blob());
+    const obj = {
+      config: {
+        spampleRate: recording.spampleRate,
+      },
+      audio: {
+        uri: recording?._uri,
+      },
+    };
+    axios.post("", obj);
+    console.log(b);
+    const uri = recording.getURI();
+    console.log("Recording stopped and stored at", uri);
   }
 
   return (
-    <View style={styles.container_a}>
-      <Text>{message}</Text>
+    <View style={styles.container}>
       <Button
         title={recording ? "Stop Recording" : "Start Recording"}
         onPress={recording ? stopRecording : startRecording}
       />
-      {/* icon={<FontAwesome name = {recording ? 'stop': 'microphone'} size = {24} color = "white" />}
-       */}
-      {getRecordingLines()}
-      <StatusBar style="auto" />
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container_a: {
     // position: 'absolute',
