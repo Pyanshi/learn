@@ -43,14 +43,16 @@ export default function AudioTest() {
     let b = await fetch(recording?._uri).then((r) => r.blob());
     const obj = {
       config: {
-        spampleRate: recording.spampleRate,
+        spampleRate: recording?._options?.android?.sampleRate,
       },
       audio: {
         uri: recording?._uri,
       },
     };
-    axios.post("", obj);
-    console.log(b);
+
+    // axios.post("", obj);
+    console.log(b, "b");
+    console.log(obj, "obj");
     const uri = recording.getURI();
     console.log("Recording stopped and stored at", uri);
   }
